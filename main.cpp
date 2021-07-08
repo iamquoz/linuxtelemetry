@@ -1,7 +1,6 @@
 #include <omp.h>
 #include <iostream>
-#include "keypresses.h"
-
+#include "networking.h"
 
 // int main(int argc, char* argv[]) {
 // 	printf("%d\n", argc);
@@ -33,6 +32,19 @@
 // }S
 
 int main() {
-	keypresses();
-    return 0;
+	config abc;
+	abc.updateCycle = 5;
+	#pragma omp parallel sections 
+	{
+		#pragma omp section 
+		{
+			mainLoop(abc);
+		}
+		#pragma omp section 
+		{
+			windowChanges();
+		}
+	}
+
+	return 0;
 };

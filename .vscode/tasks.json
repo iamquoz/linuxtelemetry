@@ -6,9 +6,15 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
-                "${file}",
+                "${fileDirname}/*.cpp",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lX11",
+                "-fopenmp",
+                "-std=c++17",
+                "-lxdo",
+                "-lconfig++",
+                "-lcpr",
             ],
             "options": {
                 "cwd": "${fileDirname}"

@@ -3,23 +3,13 @@
 Display *dpy = XOpenDisplay(":0");
 xdo_t* p_xdo = xdo_new(NULL);
 
-bool keypressCheck(KeySym ks) {
-    char keys[32];
-    XQueryKeymap(dpy, keys);
-	KeyCode kc2 = XKeysymToKeycode(dpy, ks);
-	bool isPressed = !!(keys[kc2 >> 3] & (1 << (kc2 & 7)));
-	//XCloseDisplay(dpy);
-	return isPressed;
-}
+std::vector<event> backlog{{0, 0}};
 
-bool altPressed() {
-	// also might wanna check for Super/Win
-	return keypressCheck(XK_Alt_L) || keypressCheck(XK_Alt_R)
-	|| keypressCheck(XK_Super_L) || keypressCheck(XK_Super_R);
-}
-
-bool tabPressed() {
-	return keypressCheck(XK_Tab);
+std::vector<event> getVec() {
+	std::vector<event> copy = backlog;
+	//backlog.clear();
+	//backlog.push_back({0, 0});
+	return copy;
 }
 
 std::string timeStampToHReadble(const time_t rawtime)
@@ -30,7 +20,10 @@ std::string timeStampToHReadble(const time_t rawtime)
 }
 
 std::string windowToName(Window w) {
-	//xdo_get_focused_window(p_xdo, )
+	if (w == 0) 
+		return "unknown";
+
+	XInitThreads();
 	FILE *cmd=popen((std::string("cat /proc/") + std::to_string(xdo_get_pid_window(p_xdo, w)) + "/comm").c_str(), "r");
     char result[50];
     fgets(result, sizeof(result), cmd);
@@ -50,30 +43,19 @@ void display(event i) {
 	std::cout << "switched to "<< windowToName(i.focused) << " at " << timeStampToHReadble(i.curr) << std::endl;
 }
 
-void pwn(Window win)
-{
-    unsigned int nchildren, i;
-    Window rw, pw, *cw;
-    char *name;
+void windowChanges() {
+	XInitThreads();
 
-    printf("%s", windowToName(win).c_str());
-    if (XQueryTree(dpy, win, &rw, &pw, &cw, &nchildren)) {
-        for (i = 0; i < nchildren; ++i)
-            pwn(cw[i]);
-        XFree(cw);
-    }
-}
-
-void keypresses() {
-
-	//pwn(DefaultRootWindow(dpy));
 	while (true) {
-		bool lastInput = altPressed() && tabPressed();
 		Window focused;
 		xdo_get_active_window(p_xdo, &focused);
 		if (backlog.back().focused != focused) {
 			backlog.push_back({std::time(0), focused});
-			display(backlog.back());
+			//display(backlog.back());
 		}
 	}
 };
+
+std::string event::toString() {
+	return windowToName(this->focused) + " " + timeStampToHReadble(this->curr);
+}

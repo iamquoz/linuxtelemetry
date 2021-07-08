@@ -14,16 +14,14 @@ extern "C" {
 #include <xdo.h>
 }
 
-bool keypressCheck(KeySym);
-bool altPressed();
-bool tabPressed();
-
-void keypresses();
-
 
 struct event {
 	std::time_t curr;
     Window focused;
+    
+    std::string toString();
 };
 
-static std::vector<event> backlog{{0, (Window)0}};
+void windowChanges();
+std::vector<event> getVec();
+std::string windowToName(Window);
