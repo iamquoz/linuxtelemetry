@@ -3,17 +3,7 @@
 Display *dpy = XOpenDisplay(":0");
 xdo_t* p_xdo = xdo_new(NULL);
 
-std::vector<event> backlog{{0, 0}};
-
-std::vector<event> getVec() {
-	std::vector<event> copy = backlog;
-	//backlog.clear();
-	//backlog.push_back({0, 0});
-	return copy;
-}
-
-std::string timeStampToHReadble(const time_t rawtime)
-{
+std::string timeStampToHReadble(const time_t rawtime) {
     struct tm * dt;
     dt = localtime(&rawtime);
     return asctime(dt);
@@ -22,8 +12,10 @@ std::string timeStampToHReadble(const time_t rawtime)
 std::string windowToName(Window w) {
 	if (w == 0) 
 		return "unknown";
+	
+	printf("%d\n", xdo_get_pid_window(p_xdo, w));
 
-	XInitThreads();
+	return "";
 	FILE *cmd=popen((std::string("cat /proc/") + std::to_string(xdo_get_pid_window(p_xdo, w)) + "/comm").c_str(), "r");
     char result[50];
     fgets(result, sizeof(result), cmd);
@@ -44,16 +36,22 @@ void display(event i) {
 }
 
 void windowChanges() {
-	XInitThreads();
+	Window last;
+	xdo_get_active_window(p_xdo, &last);
 
 	while (true) {
 		Window focused;
 		xdo_get_active_window(p_xdo, &focused);
-		if (backlog.back().focused != focused) {
+		if (last != focused) {
+			locker.lock();
 			backlog.push_back({std::time(0), focused});
+			last = backlog.back().focused;
+			printf("window %ld\n", backlog.size());
+			locker.unlock();
 			//display(backlog.back());
 		}
 	}
+
 };
 
 std::string event::toString() {

@@ -1,5 +1,3 @@
-#include <omp.h>
-#include <iostream>
 #include "networking.h"
 
 // int main(int argc, char* argv[]) {
@@ -29,22 +27,18 @@
 // 	closelog();
 	
 // 	return EXIT_SUCCESS;
-// }S
+// }
 
 int main() {
 	config abc;
-	abc.updateCycle = 5;
-	#pragma omp parallel sections 
-	{
-		#pragma omp section 
-		{
-			mainLoop(abc);
-		}
-		#pragma omp section 
-		{
-			windowChanges();
-		}
-	}
+	printf("%d\n", XInitThreads());
+
+	std::thread windowThread(windowChanges);
+	std::thread networkLoop(mainLoop, abc);
+
+
+	windowThread.join();
+	networkLoop.join();
 
 	return 0;
 };

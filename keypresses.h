@@ -1,12 +1,6 @@
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include <X11/Xatom.h>
+#include <thread>
+#include <mutex>
+#include <cstring>
 #include <ctime>
 #include <vector>
 #include <iostream>
@@ -23,5 +17,9 @@ struct event {
 };
 
 void windowChanges();
-std::vector<event> getVec();
 std::string windowToName(Window);
+void display(std::vector<event>);
+void display(event);
+
+inline std::mutex locker;
+inline std::vector<event> backlog;
