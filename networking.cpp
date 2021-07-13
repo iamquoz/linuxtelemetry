@@ -19,7 +19,6 @@ void mainLoop(config c) {
 			};
 			auto body = cpr::Body{str.c_str(), str.length()};
 			cpr::Response r = cpr::Post(url, payload);
-			std::cout << r.text << std::endl;
 		}
 		backlog.clear();
 		locker.unlock();

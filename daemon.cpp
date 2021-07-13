@@ -43,12 +43,10 @@ void mainSkeleton()
 	chdir("/");
 	
 	/* Close all open file descriptors */
-	int x;
-	for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
-	{
+	
+	for (int x = sysconf(_SC_OPEN_MAX); x>=0; x--)
 		close (x);
-	}
 	
 	/* Open the log file */
-	openlog ("firstdaemon", LOG_PID, LOG_DAEMON);
+	openlog ("course", LOG_PID, LOG_DAEMON);
 }

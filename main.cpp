@@ -1,4 +1,5 @@
 #include "networking.h"
+#include "daemon.h"
 
 // int main(int argc, char* argv[]) {
 // 	printf("%d\n", argc);
@@ -33,12 +34,18 @@ int main() {
 	config abc;
 	XInitThreads();
 
-	std::thread windowThread(windowChanges);
-	std::thread networkLoop(mainLoop, abc);
+	mainSkeleton();
+		while (true) {
+			
+		
+		std::thread windowThread(windowChanges);
+		std::thread networkLoop(mainLoop, abc);
 
 
-	windowThread.join();
-	networkLoop.join();
+		windowThread.join();
+		networkLoop.join();
 
+	}
+	closelog();
 	return 0;
 };
