@@ -12,14 +12,14 @@ extern "C" {
 struct event {
 	std::time_t curr;
     Window focused;
-    
+
+    // yes, hacky, but helps avoid deadlocks further in
+    std::string focusedName;
+
     std::string toString();
 };
 
 void windowChanges();
-std::string windowToName(Window);
-void display(std::vector<event>);
-void display(event);
 
 inline std::mutex locker;
 inline std::vector<event> backlog;

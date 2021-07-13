@@ -31,7 +31,7 @@
 
 int main() {
 	config abc;
-	printf("%d\n", XInitThreads());
+	XInitThreads();
 
 	std::thread windowThread(windowChanges);
 	std::thread networkLoop(mainLoop, abc);
