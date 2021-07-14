@@ -22,6 +22,7 @@ void windowChanges() {
 	while (true) {
 		Window focused;
 		xdo_get_active_window(p_xdo, &focused);
+		
 		if (last != focused) {
 			locker.lock();
 			backlog.push_back({std::time(0), focused, windowToName(focused)});

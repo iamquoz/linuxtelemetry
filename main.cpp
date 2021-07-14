@@ -34,8 +34,8 @@ int main() {
 	config abc;
 	XInitThreads();
 
-	mainSkeleton();
-		while (true) {
+	//mainSkeleton();
+	//while (true) {
 			
 		
 		std::thread windowThread(windowChanges);
@@ -45,7 +45,7 @@ int main() {
 		windowThread.join();
 		networkLoop.join();
 
-	}
-	closelog();
+	//}
+	//closelog();
 	return 0;
 };

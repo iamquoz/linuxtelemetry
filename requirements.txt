@@ -1,4 +1,5 @@
-sudo apt install xdotool-dev
+//sudo apt install xdotool-dev
+requires this fork of xdotool https://github.com/dpellegr/xdotool, fixes a lot of memory leaks
 sudo apt install libconfig++-dev
 sudo apt install libX11-dev
 

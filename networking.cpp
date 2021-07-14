@@ -4,6 +4,7 @@ void mainLoop(config c) {
 
 	
 	auto url = cpr::Url{c.server};
+	auto header = cpr::Header{{"Content-Type", "text/plain"}};
 
 	while (true) {
 		
@@ -12,13 +13,9 @@ void mainLoop(config c) {
 		
 		for (auto i : backlog) {
 			auto str = i.focusedName;
-			auto payload = cpr::Multipart {
-				{"window", cpr::Buffer{str.c_str(), str.c_str() + str.length(), ""}},
-				{"pc", cpr::Buffer{c.pcname.c_str(), c.pcname.c_str() + c.pcname.length(), ""}},
-				{"time", i.curr},
-			};
-			auto body = cpr::Body{str.c_str(), str.length()};
-			cpr::Response r = cpr::Post(url, payload);
+			auto body = cpr::Body{"{\n\"window\": \"", str.c_str(), "\",\n\"pc\": \"", c.pcname.c_str(), "\",\n\"time\": \"", std::to_string(i.curr).c_str(), "\"\n}"};
+			cpr::Response r = cpr::Post(url, body, header);
+			//std::cout << r.text << std::endl;
 		}
 		backlog.clear();
 		locker.unlock();
