@@ -1,6 +1,5 @@
 #include "keypresses.h"
 
-Display *dpy = XOpenDisplay(":0");
 xdo_t* p_xdo = xdo_new(NULL);
 
 std::string windowToName(Window w) {
@@ -18,9 +17,12 @@ std::string windowToName(Window w) {
 void windowChanges() {
 	Window last;
 	xdo_get_active_window(p_xdo, &last);
-
+	
 	while (true) {
 		Window focused;
+		// we really only need to get the current window every 300ms or so
+		usleep(300);
+		
 		xdo_get_active_window(p_xdo, &focused);
 		
 		if (last != focused) {
@@ -28,6 +30,7 @@ void windowChanges() {
 			backlog.push_back({std::time(0), focused, windowToName(focused)});
 			last = backlog.back().focused;
 			locker.unlock();
+		
 		}
 	}
 

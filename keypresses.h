@@ -3,7 +3,7 @@
 #include <cstring>
 #include <ctime>
 #include <vector>
-#include <iostream>
+
 extern "C" {
 #include <xdo.h>
 }
@@ -21,5 +21,6 @@ struct event {
 
 void windowChanges();
 
+// both global variables
 inline std::mutex locker;
 inline std::vector<event> backlog;
