@@ -1,28 +1,26 @@
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import { Request, Response } from "express";
 
 import pc from './responces/pc'
 import upload from './responces/upload'
 import pcs from "./responces/pcs";
 
-const port = 5000;
+const express = require('express');
+const app = express();
 
-const server = createServer( (request : IncomingMessage, response : ServerResponse) => {
-	var url = new URL("http://" + request.headers.host + request.url);
+app.use(express.json());
+app.use(express.urlencoded());
 
-	if (url.pathname === '/upload') {
-		upload(request, response);
-	}
-	else if (url.pathname === '/pcs') {
-		pcs(request, response);
-	}
-	else if (url.pathname === '/pc') {
-		pc(request, response, url);
-	}
-	else {
-		console.log('else');
-		response.end("Nothing");
-		response.statusCode = 418;
-	}
-});
+const port = process.env.port || 5000;
+app.listen(port, () => console.log('ready'));
 
-server.listen(port);
+app.get('/pcs', (req, res) => {
+	pcs(req, res);
+})
+
+app.get('/pc/:name', (req, res) => {
+	pc(req.params.name, res);
+})
+
+app.post('/upload', (req, res) => {
+	upload(req, res)
+})

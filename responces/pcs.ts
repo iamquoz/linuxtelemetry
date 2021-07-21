@@ -1,14 +1,11 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { Request, Response } from "express";
 
 import { allpcs } from "../sql";
 
-export default function pcs(req : IncomingMessage, res : ServerResponse) {
-    
+export default function pcs(req : Request, res : Response) {
     allpcs()
         .then(reply => {
-            res.end(reply.rows.map(pc => pc.pcname).join('\n'))})
-        .catch(e => console.error(e.stack));
+            res.status(200).json(reply.rows.map(pc => pc.pcname))})
+        .catch(e => res.status(500).json(e));
 
-//    res.end("done");
-    res.statusCode = 200;
 }

@@ -1,28 +1,14 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { Request, Response } from "express";
 
 import { insert } from "../sql";
 
-export default function upload(req : IncomingMessage, res : ServerResponse) {
-    var body = '';
-	req.on('data', (data) => {
-		body += data;
-	})
-	req.on('end', () => {
-        var payload = {
-            window: '',
-            pc: '',
-            time: ''
-        };
-        
-        try {
-            payload = JSON.parse(body);
-        } catch (error) {
-            console.log(error);
-        }
-
-        insert(payload.pc, payload.time, payload.window);
-	})
-
-	res.end(body);
-	res.statusCode = 200;
+export default function upload(req : Request, res : Response) {
+    if (req.body.pc !== '' && req.body.time !== '' && req.body.window !== '')
+        insert(req.body.pc, req.body.time, req.body.window)
+            .then((res) => {
+                res.status(200).send('Success');
+            })
+            .catch((err) => {
+                res.status(500).json(err);
+            });
 }
