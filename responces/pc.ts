@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 
 import { indivpc } from "../sql";
 
@@ -14,7 +14,6 @@ export default function pc(name : string, res : Response) {
             .catch(err => res.status(500).json(err));
     }
     else {
-        res.send('Bad Request');
-        res.status(400);
+        res.status(400).send('Bad request');
     }
 }
