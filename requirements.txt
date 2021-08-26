@@ -3,10 +3,5 @@ requires this fork of xdotool https://github.com/dpellegr/xdotool, fixes a lot o
 sudo apt install libconfig++-dev
 sudo apt install libX11-dev
 
-git clone https://github.com/whoshuu/cpr.git
-cd cpr
-mkdir build && cd build
-cmake ..
-make
-sudo make install
-
+//httplib.h header
+git clone https://github.com/yhirose/cpp-httplib

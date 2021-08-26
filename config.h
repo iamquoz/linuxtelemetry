@@ -21,15 +21,9 @@ struct config {
 		catch(const libconfig::ParseException &pex) {
 			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
 			  << " - " << pex.getError() << std::endl;
-		return;
+			return;
   		}
-		// catch(...) {
-		// 	server = "default.server";
-		// 	updateCycle = 600;
-
-		// 	printf("\n%s, %d\n", server.c_str(), updateCycle);
-		// 	return;
-		// }
+		  
 		try {
 			server = cfg.lookup("server").c_str();
 		}

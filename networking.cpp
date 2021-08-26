@@ -2,9 +2,8 @@
 
 void mainLoop(config c) {
 
-	auto url = cpr::Url{c.server};
-	auto header = cpr::Header{{"Content-Type", "text/plain"}};
-
+	httplib::Client cli{c.server};
+	
 	while (true) {
 		
 		sleep(c.updateCycle);
@@ -19,8 +18,13 @@ void mainLoop(config c) {
 				"time": std::to_string(i.curr).c_str()
 			}
 			*/
-			auto body = cpr::Body{"{\n\"window\": \"", i.focusedName.c_str(), "\",\n\"pc\": \"", c.pcname.c_str(), "\",\n\"time\": \"", std::to_string(i.curr).c_str(), "\"\n}"};
-			cpr::Post(url, body, header);
+			std::string payload = (
+				"{\n\"window\": \"" + i.focusedName 
+				+ "\",\n\"pc\": \"" + c.pcname 
+				+ "\",\n\"time\": \"" + std::to_string(i.curr)
+				+ "\"\n}");
+
+			auto res = cli.Post("/upload", payload, "application/json");
 		}
 		// remove everything from the vector to not repeat payloads
 		backlog.clear();

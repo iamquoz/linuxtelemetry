@@ -7,19 +7,16 @@ int main() {
 	//idk it seems to crash less
 	XInitThreads();
 
-	mainSkeleton();
+	//mainSkeleton();
 	
-	// daemon code
-	while (true) {
-			
-		std::thread windowThread(windowChanges);
-		std::thread networkLoop(mainLoop, abc);
+	
+	std::thread windowThread(windowChanges);
+	std::thread networkLoop(mainLoop, abc);
 
 
 		windowThread.join();
 		networkLoop.join();
 
-	}
 
 	// send everything that's left 
 	mainLoop(abc);
