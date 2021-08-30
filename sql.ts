@@ -1,6 +1,16 @@
+// TABLE activity
+// pcname varchar 
+// time bigint 
+// app varchar 
+// innerid integer (primary key)
+
+// TABLE users
+// username varchar 
+// hash varchar
+
 import { Pool, QueryResult } from "pg";
 
-import { pcEvent } from "./interfaces";
+import { pcEvent, user } from "./interfaces";
 
 require('dotenv').config();
 
@@ -13,7 +23,7 @@ const pool = new Pool({
 })
 
 function insert(pcname: string, time: string, app: string) : Promise<QueryResult<pcEvent>> {
-    return pool.query('INSERT INTO activity(pcname, time, app) VALUES($1, $2, $3)', [pcname, parseInt(time), app]);
+    return pool.query('INSERT INTO activity(pcname, time, app) VALUES($1, $2, $3) RETURNING *', [pcname, parseInt(time), app]);
 }
 
 function allpcs() : Promise<QueryResult<pcEvent>> {
@@ -27,4 +37,16 @@ function indivpc(pcname: string | string[]) : Promise<QueryResult<pcEvent>> {
     return pool.query('SELECT * FROM activity WHERE pcname = $1', [pcname]);
 }
 
-export {insert, allpcs, indivpc};
+function usercred(username: string) : Promise<QueryResult<user>> {
+	return pool.query('SELECT * FROM users WHERE username = $1', [username]);
+}
+
+function adduser(username: string, hash : string) : Promise<QueryResult<user>> {
+	return pool.query('INSERT INTO users (username, hash) VALUES ($1, $2) RETURNING *', [username, hash]);
+}
+
+function changepw(username: string, hash : string) : Promise<QueryResult<user>> {
+	return pool.query('UPDATE users SET hash = $2 WHERE username = $1 RETURNING *', [username, hash]);
+}
+
+export {insert, allpcs, indivpc, usercred, adduser, changepw};

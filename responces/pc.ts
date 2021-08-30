@@ -1,8 +1,10 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 
 import { indivpc } from "../sql";
 
-export default function pc(name : string, res : Response) {
+export default function pc(req : Request, res : Response) {
+	const name: string =  req.params.name;
+	
     if (name) {
         indivpc(name)
             .then(reply => {
