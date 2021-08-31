@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from "express";
-import { usercred, changepw, adduser } from "./sql";
+import { usercred, changepw, adduser, check } from "./sql";
 
 const saltRounds = 10;
 
@@ -26,12 +26,17 @@ function register(req: Request, res: Response) {
 	const password: string = req.body.password;
 
 	if (username.length !== 0 && password.length !== 0)
-		bcrypt.hash(password, saltRounds)
-			.then(hash => {
-					adduser(username, hash);
-					res.status(200).send('Success');
-				})
-			.catch(err => res.status(500).json(err));		
+		check(username).then(result => {
+			if (result.rows.length === 0)
+				bcrypt.hash(password, saltRounds)
+					.then(hash => {
+							adduser(username, hash);
+							res.status(200).json({ message: 'Success'});
+						})
+					.catch(err => res.status(500).json(err));		
+			else 
+				res.status(403).json({ message: 'User already exists' });
+		})
 }
 
 function update(req: Request, res: Response) {

@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.listen(port, () => console.log('ready'));
 
-// check for present 
+// check if a cookie is present for protected routs
 router.use(cookieParser(secret));
 router.use((req: Request, res: Response, next: express.NextFunction) => {
 	if (!req.signedCookies.name) 

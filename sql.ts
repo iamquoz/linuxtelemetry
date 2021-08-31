@@ -49,4 +49,8 @@ function changepw(username: string, hash : string) : Promise<QueryResult<user>> 
 	return pool.query('UPDATE users SET hash = $2 WHERE username = $1 RETURNING *', [username, hash]);
 }
 
-export {insert, allpcs, indivpc, usercred, adduser, changepw};
+function check(username: string) : Promise<QueryResult<user>> {
+	return pool.query('SELECT 1 FROM users WHERE username = $1 LIMIT 1', [username]);
+}
+
+export {insert, allpcs, indivpc, usercred, adduser, changepw, check};
