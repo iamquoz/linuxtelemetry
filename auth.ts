@@ -1,25 +1,24 @@
-import basicAuth from "express-basic-auth"
 import bcrypt from 'bcrypt'
 import { Request, Response } from "express";
 import { usercred, changepw, adduser } from "./sql";
 
 const saltRounds = 10;
-const auth = basicAuth({
-	authorizeAsync: true,
-	authorizer: login,
-	// temp 
-	challenge: true,
-})
 
-async function login(username: string, password: string, cb: basicAuth.AsyncAuthorizerCallback) {
-	const result = await usercred(username);
+function login(req: Request, res: Response) {
+	const username: string = req.body.username;
+	const password: string = req.body.password;
 
-	const match = await bcrypt.compare(password, result.rows[0].hash);
-	
-	if (match)
-		cb(null, true);
-	else 
-		cb(null, false);
+	if (username.length !== 0 && password.length !== 0)
+		usercred(username)
+			.then(result => {
+				bcrypt.compare(password, result.rows[0].hash)
+					.then(bool => bool 
+						? res.status(200).json({ message: 'Success' })
+							.cookie('user', username, { httpOnly: true, signed: true })
+						: res.status(401).json({ message: 'Wrong password' }))
+					.catch(err => res.status(500).json(err));
+			})
+			.catch(_ => res.status(404).json({ message: 'Account doesn`t exist' }));
 }
 
 function register(req: Request, res: Response) {
@@ -36,7 +35,7 @@ function register(req: Request, res: Response) {
 }
 
 function update(req: Request, res: Response) {
-	const username: string = req.body.username;
+	const username: string = req.signedCookies.user;
 	const password: string = req.body.password;
 
 	if (username.length !== 0 && password.length !== 0)
@@ -48,5 +47,5 @@ function update(req: Request, res: Response) {
 			.catch(err => res.status(500).json(err));		
 }
 
-export default auth;
-export {register, update};
+
+export {login, register, update};

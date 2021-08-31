@@ -1,18 +1,29 @@
-import express, { Request, Response } from "express";
+import express, { request, Request, Response } from "express";
+import cookieParser from "cookie-parser";
 
 import pc from "./responces/pc"
 import upload from "./responces/upload"
 import pcs from "./responces/pcs";
-import auth, {register, update} from "./auth"
+import {login, register, update} from "./auth"
 
 
 const app = express();
 const router = express.Router();
 const port = process.env.port || 5000;
+const secret = process.env.secret || 'secret';
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.listen(port, () => console.log('ready'));
+
+// check for present 
+router.use(cookieParser(secret));
+router.use((req: Request, res: Response, next: express.NextFunction) => {
+	if (!req.signedCookies.name) 
+		res.status(401).json({ message: 'Unauthorized'})
+	else 
+		next();
+})
 
 // GET
 // /api/pc
@@ -49,7 +60,7 @@ app.post('/upload', (req: Request, res: Response) => {
 // /login
 // auth the user
 app.post('/login', (req: Request, res: Response) => {
-
+	login(req, res);
 })
 
 // POST 
@@ -59,8 +70,7 @@ app.post('/register', (req: Request, res: Response) => {
 	register(req, res);
 })
 
-app.use('/api', auth, router);
-
+app.use('/api', router);
 
 // wildcard route
 app.get('/*', (req: Request, res: Response) => {
