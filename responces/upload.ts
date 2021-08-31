@@ -6,7 +6,7 @@ export default function upload(req : Request, res : Response) {
     if (req.body.pc !== '' && req.body.time !== '' && req.body.window !== '')
         insert(req.body.pc, req.body.time, req.body.window)
             .then(_ => {
-                res.status(200).send('Success');
+                res.status(200).json({ message: 'Bad request'});
             })
             .catch(err => {
                 res.status(500).json(err);

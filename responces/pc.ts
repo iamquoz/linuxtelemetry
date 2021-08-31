@@ -16,6 +16,6 @@ export default function pc(req : Request, res : Response) {
             .catch(err => res.status(500).json(err));
     }
     else {
-        res.status(400).send('Bad request');
+        res.status(400).json({ message: 'Bad request'});
     }
 }

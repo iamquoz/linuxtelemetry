@@ -10,16 +10,16 @@ import {login, register, update} from "./auth"
 const app = express();
 const router = express.Router();
 const port = process.env.port || 5000;
-const secret = process.env.secret || 'secret';
+const secret = process.env.secret || "secret";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser(secret));
 app.listen(port, () => console.log('ready'));
 
 // check if a cookie is present for protected routs
-router.use(cookieParser(secret));
 router.use((req: Request, res: Response, next: express.NextFunction) => {
-	if (!req.signedCookies.name) 
+	if (!req.signedCookies.user) 
 		res.status(401).json({ message: 'Unauthorized'})
 	else 
 		next();
@@ -74,5 +74,5 @@ app.use('/api', router);
 
 // wildcard route
 app.get('/*', (req: Request, res: Response) => {
-	res.status(400).send('Bad request');
+	res.status(400).json({ message: 'Bad request'});
 })

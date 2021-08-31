@@ -13,10 +13,10 @@ function login(req: Request, res: Response) {
 			.then(result => {
 				bcrypt.compare(password, result.rows[0].hash)
 					.then(bool => bool 
-						? res.status(200).json({ message: 'Success' })
-							.cookie('user', username, { httpOnly: true, signed: true })
+						? res.status(200).cookie('user', username, { httpOnly: true, signed: true })
+						  .json({ message: 'Success' })
 						: res.status(401).json({ message: 'Wrong password' }))
-					.catch(err => res.status(500).json(err));
+					.catch(err => {res.status(500).json(err)});
 			})
 			.catch(_ => res.status(404).json({ message: 'Account doesn`t exist' }));
 }
@@ -47,7 +47,7 @@ function update(req: Request, res: Response) {
 		bcrypt.hash(password, saltRounds)
 			.then(hash => {
 				changepw(username, hash)
-				res.status(200).send('Success')
+				res.status(200).json({ message: 'Success'})
 			})
 			.catch(err => res.status(500).json(err));		
 }
