@@ -19,6 +19,8 @@ function login(req: Request, res: Response) {
 					.catch(err => {res.status(500).json(err)});
 			})
 			.catch(_ => res.status(404).json({ message: 'Account doesn`t exist' }));
+	else 
+		res.status(400).end();
 }
 
 function register(req: Request, res: Response) {
@@ -37,19 +39,26 @@ function register(req: Request, res: Response) {
 			else 
 				res.status(403).json({ message: 'User already exists' });
 		})
+	else 
+		res.status(400).end();
 }
 
 function update(req: Request, res: Response) {
 	const username: string = req.signedCookies.user;
 	const password: string = req.body.password;
 
+	const account: string = req.body.name;
+	const resetting: boolean = req.body.reset;
+
 	if (username.length !== 0 && password.length !== 0)
 		bcrypt.hash(password, saltRounds)
 			.then(hash => {
-				changepw(username, hash)
-				res.status(200).json({ message: 'Success'})
+				changepw(resetting ? username : account, hash)
+					.then(_ => res.status(200).json({ message: 'Success'}))
+					.catch(err => res.status(500).json(err));		
 			})
-			.catch(err => res.status(500).json(err));		
+	else 
+		res.status(400).end();
 }
 
 

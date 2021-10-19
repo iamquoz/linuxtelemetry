@@ -8,6 +8,19 @@ interface pcEvent {
 interface user {
     login: string;
     hash: string;
+    perms: Array<string | number>;
 }
 
-export {pcEvent, user}
+interface pc {
+    pcid: number;
+    pcname: string;
+    note: string;
+    clearance: number;
+}
+
+interface permissions {
+    permid: number;
+    permname: string;
+}
+
+export {pcEvent, user, permissions, pc}

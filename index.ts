@@ -1,14 +1,16 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 
-import pc from "./responces/pc"
+import regular from "./regular";
+import admin from "./admin";
+
 import upload from "./responces/upload"
-import pcs from "./responces/pcs";
+
 import {login, register, update} from "./auth"
 
 
 const app = express();
-const router = express.Router();
+
 const port = process.env.port || 5000;
 const secret = process.env.secret || "secret";
 
@@ -17,37 +19,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(secret));
 app.listen(port, () => console.log('ready'));
 
-// check if a cookie is present for protected routs
-router.use((req: Request, res: Response, next: express.NextFunction) => {
-	if (!req.signedCookies.user) 
-		res.status(401).json({ message: 'Unauthorized'})
-	else 
-		next();
-})
-
-// GET
-// /api/pc
-// get list of all available pcs
-// requires auth
-router.get('/pc', (req: Request, res: Response) => {
-	pcs(res);
-})
-
-// GET
-// /api/pc/:pcname
-// get individual stats for pc with the name pcname
-// requires auth
-router.get('/pc/:name', (req: Request, res: Response) => {
-	pc(req, res);
-})
-
-// POST
-// /api/update
-// change password of the currently logged in user
-// requires auth
-router.post('/update', (req: Request, res: Response) => {
-	update(req, res);
-})
 
 // POST
 // /upload
@@ -63,14 +34,8 @@ app.post('/login', (req: Request, res: Response) => {
 	login(req, res);
 })
 
-// POST 
-// /register
-// register the user
-app.post('/register', (req: Request, res: Response) => {
-	register(req, res);
-})
-
-app.use('/api', router);
+app.use('/api', regular);
+app.use('/admin', admin);
 
 // wildcard route
 app.get('/*', (req: Request, res: Response) => {
