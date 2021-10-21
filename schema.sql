@@ -5,6 +5,8 @@
 -- Dumped from database version 12.7 (Ubuntu 12.7-0ubuntu0.20.10.1)
 -- Dumped by pg_dump version 12.7 (Ubuntu 12.7-0ubuntu0.20.10.1)
 
+-- Started on 2021-10-22 00:44:01 +04
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -17,7 +19,8 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: deletepc(); Type: FUNCTION; Schema: public; Owner: -
+-- TOC entry 210 (class 1255 OID 16433)
+-- Name: deletepc(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.deletepc() RETURNS trigger
@@ -30,8 +33,11 @@ END
 $$;
 
 
+ALTER FUNCTION public.deletepc() OWNER TO postgres;
+
 --
--- Name: pcnamereplace(); Type: FUNCTION; Schema: public; Owner: -
+-- TOC entry 209 (class 1255 OID 16430)
+-- Name: pcnamereplace(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.pcnamereplace() RETURNS trigger
@@ -58,12 +64,15 @@ END
 $$;
 
 
+ALTER FUNCTION public.pcnamereplace() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: activity; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 202 (class 1259 OID 16388)
+-- Name: activity; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.activity (
@@ -75,8 +84,11 @@ CREATE TABLE public.activity (
 );
 
 
+ALTER TABLE public.activity OWNER TO postgres;
+
 --
--- Name: activity_innerid_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- TOC entry 203 (class 1259 OID 16405)
+-- Name: activity_innerid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.activity ALTER COLUMN innerid ADD GENERATED ALWAYS AS IDENTITY (
@@ -90,7 +102,8 @@ ALTER TABLE public.activity ALTER COLUMN innerid ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
--- Name: pcs; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 206 (class 1259 OID 16417)
+-- Name: pcs; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pcs (
@@ -101,8 +114,11 @@ CREATE TABLE public.pcs (
 );
 
 
+ALTER TABLE public.pcs OWNER TO postgres;
+
 --
--- Name: pcs_pcid_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- TOC entry 205 (class 1259 OID 16415)
+-- Name: pcs_pcid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pcs_pcid_seq
@@ -114,25 +130,33 @@ CREATE SEQUENCE public.pcs_pcid_seq
     CACHE 1;
 
 
+ALTER TABLE public.pcs_pcid_seq OWNER TO postgres;
+
 --
--- Name: pcs_pcid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- TOC entry 3154 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: pcs_pcid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pcs_pcid_seq OWNED BY public.pcs.pcid;
 
 
 --
--- Name: permissions; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 207 (class 1259 OID 16437)
+-- Name: permissions; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.permissions (
-    permid integer NOT NULL,
-    permname text
+    permname text,
+    permid integer NOT NULL
 );
 
 
+ALTER TABLE public.permissions OWNER TO postgres;
+
 --
--- Name: permissions_permid_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- TOC entry 208 (class 1259 OID 16455)
+-- Name: permissions_permid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.permissions_permid_seq
@@ -144,15 +168,20 @@ CREATE SEQUENCE public.permissions_permid_seq
     CACHE 1;
 
 
+ALTER TABLE public.permissions_permid_seq OWNER TO postgres;
+
 --
--- Name: permissions_permid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- TOC entry 3155 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: permissions_permid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.permissions_permid_seq OWNED BY public.permissions.permid;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 204 (class 1259 OID 16407)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
@@ -162,22 +191,27 @@ CREATE TABLE public.users (
 );
 
 
+ALTER TABLE public.users OWNER TO postgres;
+
 --
--- Name: pcs pcid; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 3009 (class 2604 OID 16420)
+-- Name: pcs pcid; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pcs ALTER COLUMN pcid SET DEFAULT nextval('public.pcs_pcid_seq'::regclass);
 
 
 --
--- Name: permissions permid; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 3010 (class 2604 OID 16457)
+-- Name: permissions permid; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.permissions ALTER COLUMN permid SET DEFAULT nextval('public.permissions_permid_seq'::regclass);
 
 
 --
--- Name: activity activity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3012 (class 2606 OID 16404)
+-- Name: activity activity_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.activity
@@ -185,7 +219,8 @@ ALTER TABLE ONLY public.activity
 
 
 --
--- Name: pcs pcname_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3016 (class 2606 OID 16429)
+-- Name: pcs pcname_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pcs
@@ -193,7 +228,8 @@ ALTER TABLE ONLY public.pcs
 
 
 --
--- Name: pcs pcs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3018 (class 2606 OID 16425)
+-- Name: pcs pcs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pcs
@@ -201,7 +237,8 @@ ALTER TABLE ONLY public.pcs
 
 
 --
--- Name: permissions permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3020 (class 2606 OID 16465)
+-- Name: permissions permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.permissions
@@ -209,7 +246,8 @@ ALTER TABLE ONLY public.permissions
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3014 (class 2606 OID 16414)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -217,18 +255,22 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: activity addpc; Type: TRIGGER; Schema: public; Owner: -
+-- TOC entry 3021 (class 2620 OID 16432)
+-- Name: activity addpc; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER addpc BEFORE INSERT ON public.activity FOR EACH ROW WHEN ((pg_trigger_depth() < 1)) EXECUTE FUNCTION public.pcnamereplace();
 
 
 --
--- Name: pcs pc_delete; Type: TRIGGER; Schema: public; Owner: -
+-- TOC entry 3022 (class 2620 OID 16434)
+-- Name: pcs pc_delete; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER pc_delete BEFORE DELETE ON public.pcs FOR EACH ROW EXECUTE FUNCTION public.deletepc();
 
+
+-- Completed on 2021-10-22 00:44:01 +04
 
 --
 -- PostgreSQL database dump complete
