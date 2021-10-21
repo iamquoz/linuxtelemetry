@@ -38,7 +38,7 @@ function insert(pcname: string, time: string, app: string) : Promise<QueryResult
 }
 
 function allpcs(username: string) : Promise<QueryResult<pc>> {
-    return pool.query('SELECT pcname, pcid, note, clearance FROM pcs INNER JOIN users ON pcs.clearance = ANY(users.perms) WHERE $1 = users.username UNION SELECT pcname FROM pcs WHERE $1 = \'admin\'');
+    return pool.query('SELECT pcname, pcid, note, clearance FROM pcs INNER JOIN users ON pcs.clearance = ANY(users.perms) WHERE $1 = users.username UNION SELECT pcname, pcid, note, clearance FROM pcs WHERE $1 = \'admin\' ORDER BY pcid', [username]);
 }
 
 function indivpc(pcid: number | number[], before: number, after: number) : Promise<QueryResult<pcEvent>> {
@@ -69,19 +69,19 @@ function users() : Promise<QueryResult<user>> {
 }
 
 function perms() : Promise<QueryResult<permissions>> {
-    return pool.query('SELECT * FROM permissions');
+    return pool.query('SELECT * FROM permissions ORDER BY permid');
 }
 
 function perm(permid: number) : Promise<QueryResult<permissions>> {
-    return pool.query('SELECT * FROM permissions WHERE permid = $1');
+    return pool.query('SELECT * FROM permissions WHERE permid = $1', [permid]);
 }
 
 function deleteperm(permid: number) : Promise<QueryResult<permissions>> {
-    return pool.query('DELETE FROM permissions WHERE permid = $1');
+    return pool.query('DELETE FROM permissions WHERE permid = $1', [permid]);
 }
 
 function addpermgroup(permission: string) : Promise<QueryResult<permissions>> {
-    return pool.query('INSERT INTO permissions VALUES ($1) RETURNING *', [permission]);
+    return pool.query('INSERT INTO permissions(permname) VALUES ($1) RETURNING *', [permission]);
 }
 
 function giveperms(username: string, permid: number) : Promise<QueryResult<user>> {
@@ -108,4 +108,8 @@ function allusersforperm(permid: number) : Promise<QueryResult<user>> {
     return pool.query('SELECT username, perms FROM users WHERE $1 = ANY(perms)', [permid]);
 }
 
-export {insert, allpcs, indivpc, usercred, adduser, changepw, check, users, perms, perm, addpermgroup, deleteperm, giveperms, removeperms, deletepc, addnote, addclearance, allusersforperm};
+function allpcsforperm(permid: number) : Promise<QueryResult<pc>> {
+    return pool.query('SELECT * FROM pcs WHERE clearance = $1 UNION SELECT * FROM pcs WHERE $1 = 0', [permid]);
+}
+
+export {insert, allpcs, indivpc, usercred, adduser, changepw, check, users, perms, perm, addpermgroup, deleteperm, giveperms, removeperms, deletepc, addnote, addclearance, allusersforperm, allpcsforperm};

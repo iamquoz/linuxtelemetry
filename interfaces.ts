@@ -6,7 +6,7 @@ interface pcEvent {
 }
 
 interface user {
-    login: string;
+    username: string;
     hash: string;
     perms: Array<string | number>;
 }

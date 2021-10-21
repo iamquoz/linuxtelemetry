@@ -10,6 +10,6 @@ export default function pcs(req: Request ,res : Response) {
             note: pc.note,
             clearance: pc.clearance
         }))))
-        .catch(e => res.status(500).json(e));
+        .catch(e => res.status(500).end());
 
 }

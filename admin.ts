@@ -12,7 +12,9 @@ import {
     giveperms, 
     removeperms, 
     deleteperm, 
-    addclearance 
+    addclearance, 
+    users,
+    allpcsforperm
 } from "./sql";
 
 const admin = express.Router();
@@ -22,6 +24,15 @@ admin.use((req: Request, res: Response, next: express.NextFunction) => {
 		res.status(401).json({ message: 'Unauthorized'})
 	else 
 		next();
+})
+
+admin.get('/user', (req: Request, res: Response) => {
+    users()
+        .then(r => res.status(200).send(r.rows))
+        .catch(err => {
+            console.log(err, 'get/perms'); 
+            res.status(500).end()
+        })
 })
 
 // POST
@@ -67,6 +78,20 @@ admin.get('/perms/:id/user', (req: Request, res: Response) => {
         .then(r => res.status(200).send(r.rows))
         .catch(err => {
             console.log(err, 'get/perms/:id/users'); 
+            res.status(500).end()
+        })
+})
+
+// GET
+// /admin/perms/:id/pc
+// get all pcs with clearance = id
+admin.get('/perms/:id/pc', (req: Request, res: Response) => {
+    const permid: number = parseInt(req.params.id);
+
+    allpcsforperm(permid)
+        .then(r => res.status(200).send(r.rows))
+        .catch(err => {
+            console.log(err, 'get/perms/:id/pc'); 
             res.status(500).end()
         })
 })
